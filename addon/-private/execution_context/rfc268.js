@@ -152,15 +152,13 @@ ExecutionContext.prototype = {
 
   invokeHelper(selector, options, helper, ...args) {
     let element = this.getElements(selector, options)[0];
-    try {
-      return helper(element, ...args);
-    } catch (e) {
+    return helper(element, ...args).catch((e) => {
       throwBetterError(
         this.pageObjectNode,
         options.pageObjectKey,
         e.message || e.toString(),
         { selector }
       );
-    }
+    });
   }
 };
