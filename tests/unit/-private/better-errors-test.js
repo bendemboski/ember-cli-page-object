@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberError from '@ember/error';
 import { test, module } from 'qunit';
 import { create } from 'ember-cli-page-object';
 import {
@@ -23,7 +23,7 @@ test('shows the expected error message when `selector` is not passed in', functi
   const fn = () => {
     throwBetterError(page.foo.bar, 'focus', 'Oops!');
   };
-  const expectedError = new Ember.Error(
+  const expectedError = new EmberError(
     "Oops!\n\nPageObject: 'page.foo.bar.focus'"
   );
 
@@ -36,7 +36,7 @@ test('shows the expected error message when `selector` is passed in', function(a
   const fn = () => {
     throwBetterError(page.foo.bar, 'focus', 'Oops!', { selector: '.foo .bar' });
   };
-  const expectedError = new Ember.Error(
+  const expectedError = new EmberError(
     "Oops!\n\nPageObject: 'page.foo.bar.focus'\n  Selector: '.foo .bar'"
   );
 
@@ -46,15 +46,15 @@ test('shows the expected error message when `selector` is passed in', function(a
 test('logs the error to the console', function(assert) {
   assert.expect(2);
 
-  const origEmberLoggerError = Ember.Logger.error;
+  const origEmberLoggerError = console.error;
 
   try {
-    Ember.Logger.error = (msg) => {
+    console.error = (msg) => {
       assert.equal(msg, "Oops!\n\nPageObject: 'page.foo.bar.focus'");
     };
 
     assert.throws(() => throwBetterError(page.foo.bar, 'focus', 'Oops!'));
   } finally {
-    Ember.Logger.error = origEmberLoggerError;
+    console.error = origEmberLoggerError;
   }
 });
