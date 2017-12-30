@@ -1,6 +1,9 @@
 /* global Symbol */
-import Ember from 'ember';
-import { buildSelector, assign as mergeFunction } from '../helpers';
+import { A } from '@ember/array';
+import {
+  buildSelector,
+  assign as mergeFunction
+} from '../helpers';
 import { create } from '../create';
 import { count } from './count';
 import Ceibo from 'ceibo';
@@ -61,7 +64,7 @@ function generateItem(node, index, definition, key) {
 
 function toArrayMethod(node, definition, key) {
   return function() {
-    let array = Ember.A();
+    let array = A();
     let index;
     let count;
 
