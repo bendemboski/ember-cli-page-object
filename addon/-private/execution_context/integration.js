@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from '-jquery';
 import { run } from '@ember/runloop';
 import {
   guardMultiple,
