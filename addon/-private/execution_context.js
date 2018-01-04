@@ -14,6 +14,13 @@ const executioncontexts = {
  * @private
  */
 export function getExecutionContext(pageObjectNode) {
+  // Our `getContext(pageObjectNode)` will return a context only if the test
+  // called `page.setContext(this)`, which is only supposed to happen in
+  // integration tests. `@ember/test-helpers`' `getTestContext()` will return a
+  // context only if the test called one of the RFC268 `ember-qunit`
+  // `setupTest()` methods (e.g. `setupRenderingTest()`,
+  // `setupApplicationTest()`). If neither of these are the case, the only
+  // supported scenario is an acceptance test.
   let testContext = getContext(pageObjectNode);
   let context;
   if (testContext) {
