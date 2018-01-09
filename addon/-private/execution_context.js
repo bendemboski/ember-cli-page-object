@@ -1,5 +1,5 @@
 import { getContext } from './helpers';
-import { getContext as getTestContext } from '@ember/test-helpers'
+import { getContext as getRfc268Context, visit } from './rfc268-helpers';
 import AcceptanceExecutionContext from './execution_context/acceptance';
 import IntegrationExecutionContext from './execution_context/integration';
 import Rfc268Context from './execution_context/rfc268';
@@ -25,7 +25,15 @@ export function getExecutionContext(pageObjectNode) {
   let context;
   if (testContext) {
     context = 'integration';
-  } else if (getTestContext()) {
+  } else if (getRfc268Context()) {
+    if (!visit) {
+      throw new Error([
+        'You are trying to use ember-cli-page-object with RFC232/RFC268 support',
+        '(setupRenderingContext()/setupApplicationContext()) which requires at',
+        'least ember-qunit@3.2.0 or ember-mocha@0.13.0-beta.3.'
+      ]);
+    }
+
     context = 'rfc268';
   } else {
     context = 'acceptance';

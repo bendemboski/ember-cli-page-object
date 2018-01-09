@@ -12,7 +12,7 @@ import {
   click,
   fillIn,
   triggerEvent
-} from '@ember/test-helpers';
+} from '../rfc268-helpers';
 import {
   ELEMENT_NOT_FOUND,
   throwBetterError
