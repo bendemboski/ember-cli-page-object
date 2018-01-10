@@ -34,3 +34,5 @@ export let visit = helpers.visit;
 export let click = helpers.click;
 export let fillIn = helpers.fillIn;
 export let triggerEvent = helpers.triggerEvent;
+export let focus = helpers.focus;
+export let blur = helpers.blur;
