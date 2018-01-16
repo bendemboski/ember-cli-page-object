@@ -1,5 +1,5 @@
 import { getContext } from './helpers';
-import { getContext as getRfc268Context, visit } from './rfc268-helpers';
+import isRfc268Test from './is-rfc268-test';
 import AcceptanceExecutionContext from './execution_context/acceptance';
 import IntegrationExecutionContext from './execution_context/integration';
 import Rfc268Context from './execution_context/rfc268';
@@ -16,24 +16,19 @@ const executioncontexts = {
 export function getExecutionContext(pageObjectNode) {
   // Our `getContext(pageObjectNode)` will return a context only if the test
   // called `page.setContext(this)`, which is only supposed to happen in
-  // integration tests. `@ember/test-helpers`' `getTestContext()` will return a
-  // context only if the test called one of the RFC268 `ember-qunit`
-  // `setupTest()` methods (e.g. `setupRenderingTest()`,
-  // `setupApplicationTest()`). If neither of these are the case, the only
-  // supported scenario is an acceptance test.
+  // integration tests (i.e. pre-RFC232/RFC268). However, the integration
+  // context does work with RFC232 (`setupRenderingContext()`) tests, and before
+  // the RFC268 execution context was implemented, some users may have migrated
+  // their tests to RFC232 tests, leaving the `page.setContext(this)` in place.
+  // So, in order to not break those tests, we need to check for that case
+  // first, and only if that hasn't happened, check to see if we're in an
+  // RFC232/RFC268 test, and if not, fall back on assuming a pre-RFC268
+  // acceptance test, which is the only remaining supported scenario.
   let testContext = getContext(pageObjectNode);
   let context;
   if (testContext) {
     context = 'integration';
-  } else if (getRfc268Context()) {
-    if (!visit) {
-      throw new Error([
-        'You are trying to use ember-cli-page-object with RFC232/RFC268 support',
-        '(setupRenderingContext()/setupApplicationContext()) which requires at',
-        'least ember-qunit@3.2.0 or ember-mocha@0.13.0-beta.3.'
-      ]);
-    }
-
+  } else if (isRfc268Test()) {
     context = 'rfc268';
   } else {
     context = 'acceptance';
