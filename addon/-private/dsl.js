@@ -11,7 +11,7 @@ import { isVisible } from './properties/is-visible';
 import { text } from './properties/text';
 import { value } from './properties/value';
 import { getRoot } from './helpers';
-import wait from 'ember-test-helpers/wait';
+import { settled } from './rfc268-helpers';
 
 const thenDescriptor = {
   isDescriptor: true,
@@ -22,7 +22,7 @@ const thenDescriptor = {
     // it.
     let promise = getRoot(this)._promise;
     if (!promise) {
-      promise = (window.wait || wait)();
+      promise = (window.wait || settled)();
     }
     return promise.then(...arguments);
   }

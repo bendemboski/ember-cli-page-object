@@ -1,5 +1,5 @@
 import ExecutionContext from './native-events-context';
-import wait from 'ember-test-helpers/wait';
+import { settled } from '../rfc268-helpers';
 
 import {
   visit
@@ -17,7 +17,7 @@ AcceptanceNativeEventsExecutionContext.prototype.visit = function() {
 };
 
 AcceptanceNativeEventsExecutionContext.prototype.runAsync = function(cb) {
-  (window.wait || wait)().then(() => {
+  (window.wait || settled)().then(() => {
     cb(this);
   });
 
