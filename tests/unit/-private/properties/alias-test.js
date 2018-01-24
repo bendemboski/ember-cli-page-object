@@ -59,6 +59,28 @@ moduleForProperty('alias', function(test) {
     await this.adapter.await(ret);
   });
 
+  test('returns chainable object from collection method', async function(assert) {
+    assert.expect(1);
+
+    const page = create({
+      buttons: collection({
+        itemScope: 'div',
+
+        item: {
+          clickButton: clickable('button'),
+          aliasedClickButton: alias('clickButton', { chainable: true })
+        }
+      })
+    });
+
+    await this.adapter.createTemplate(this, page, '<div><button>Click me</button></div>');
+
+    let ret = page.buttons(0).aliasedClickButton();
+    assert.ok(ret.clickButton);
+
+    await this.adapter.await(ret);
+  });
+
   test('can alias a top-level collection', async function(assert) {
     assert.expect(1);
 

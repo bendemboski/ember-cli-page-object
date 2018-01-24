@@ -31,8 +31,8 @@ ExecutionContext.prototype = {
   },
 
   runAsync(cb) {
-    let isChained = Boolean(this.pageObjectNode._chained);
     let root = getRoot(this.pageObjectNode);
+    let isChained = !root._chainedTree;
 
     if (isChained) {
       // Already chained, so our root is the root of the chained tree, and we
@@ -53,7 +53,7 @@ ExecutionContext.prototype = {
     // which our method was invoked, we find and return our node's mirror in the
     // chained tree so calls to it can be recognized as chained calls, and
     // trigger the chained-call waiting behavior.
-    let isChained = Boolean(this.pageObjectNode._chained);
+    let isChained = !getRoot(this.pageObjectNode)._chainedTree;
 
     if (isChained) {
       // Already chained, so our node is in the chained tree
@@ -73,7 +73,7 @@ ExecutionContext.prototype = {
       path.shift();
 
       node = getRoot(this.pageObjectNode)._chainedTree;
-      path.forEach((key) => node = node[key]);
+      path.forEach((key) => node = getChild(node, key));
       return node;
     }
   },
@@ -173,3 +173,13 @@ ExecutionContext.prototype = {
     });
   }
 };
+
+function getChild(node, key) {
+  let match = /(.+)\((\d+)\)/.exec(key);
+  if (match) {
+    let [ , name, index ] = match;
+    return node[name](parseInt(index, 10))
+  } else {
+    return node[key];
+  }
+}

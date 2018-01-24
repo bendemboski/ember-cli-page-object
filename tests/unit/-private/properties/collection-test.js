@@ -1,5 +1,5 @@
 import { moduleForProperty } from '../../../helpers/properties';
-import { create, collection, text, hasClass } from 'ember-cli-page-object';
+import { create, collection, text, hasClass, clickable } from 'ember-cli-page-object';
 import withIteratorSymbolDefined from '../../../helpers/with-iterator-symbol-defined';
 
 moduleForProperty('collection', function(test) {
@@ -529,5 +529,29 @@ moduleForProperty('collection', function(test) {
 
     assert.equal(page.foo().count, 2);
     assert.equal(page.foo(0).text, 'Lorem');
+  });
+
+  test('actions on items are chainable', async function(assert) {
+    let page = create({
+      foo: collection({
+        itemScope: 'span',
+
+        item: {
+          click: clickable('button'),
+          bar: text('button')
+        }
+      })
+    });
+
+    await this.adapter.createTemplate(
+      this,
+      page,
+      '<span><button>Lorem</button></span><span><button>ipsum</button></span>'
+    );
+
+    assert.equal(page.foo(0).click().bar, 'Lorem');
+    assert.equal(page.foo(0).click().click().bar, 'Lorem');
+    assert.equal(page.foo(1).click().bar, 'ipsum');
+    assert.equal(page.foo(1).click().click().bar, 'ipsum');
   });
 });
