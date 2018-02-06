@@ -15,6 +15,7 @@ export default function isRfc268Test() {
   // an RFC268 test).
   let hasValidTestContext = Boolean(getContext());
   if (!hasValidTestContext) {
+    console.log("No valid test context");
     return false;
   }
 
@@ -25,6 +26,7 @@ export default function isRfc268Test() {
   // check for it, and if we can't find it, we can't use the RFC268 execution
   // context, so we throw an exception.
   let hasExpectedTestHelpers = Boolean(visit);
+  console.log("visit", visit);
   if (!hasExpectedTestHelpers) {
       throw new Error([
         'You are trying to use ember-cli-page-object with RFC232/RFC268 support',
